@@ -43,10 +43,6 @@ def _store_weather(ti):
         key="weather_data",
         task_ids="extract_data_op")
 
-    # date = weather_data.get('date')
-    # temperature = weather_data.get('temperature')
-    # precipitation = weather_data.get('precipitation')
-
     date = weather_data['weather_date'].values[0]
     temperature = weather_data['temperature'].values[0]
     precipitation = weather_data['precipitation'].values[0]
@@ -77,7 +73,8 @@ with DAG(
         task_id='get_op',
         http_conn_id='my_http_connection',
         method='GET',
-        endpoint=f"/getUltraSrtFcst?serviceKey={serviceKey}&numOfRows=60&pageNo=1&dataType=json&base_date=20240926&base_time=0830&nx=101&ny=84",
+        # endpoint=f"/getUltraSrtFcst?serviceKey={serviceKey}&numOfRows=60&pageNo=1&dataType=json&base_date=20240926&base_time=0830&nx=101&ny=84",
+        endpoint=f"/getUltraSrtFcst?serviceKey={serviceKey}&numOfRows=60&pageNo=1&dataType=json&base_date={base_date}&base_time=0830&nx=101&ny=84",
         response_filter=lambda response: json.loads(response.text),
         log_response=True
     )
