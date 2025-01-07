@@ -68,23 +68,24 @@ with DAG(
     base_date = datetime.now().strftime("%Y%m%d")  # 발표 일자
     serviceKey = Variable.get("serviceKey")
 
-
+    # 현재 날씨 데이터를 받아오는 op
     task_get_op = SimpleHttpOperator(
         task_id='get_op',
         http_conn_id='my_http_connection',
         method='GET',
-        # endpoint=f"/getUltraSrtFcst?serviceKey={serviceKey}&numOfRows=60&pageNo=1&dataType=json&base_date=20240926&base_time=0830&nx=101&ny=84",
         endpoint=f"/getUltraSrtFcst?serviceKey={serviceKey}&numOfRows=60&pageNo=1&dataType=json&base_date={base_date}&base_time=0830&nx=101&ny=84",
         response_filter=lambda response: json.loads(response.text),
         log_response=True
     )
 
+    # 데이터 전처리 op
     task_extract_data_op = PythonOperator(
         task_id='extract_data_op',
         python_callable=_extract_data,
         op_args=[base_date]
     )
 
+    # 추출한 데이터를 저장하는 op
     task_store_op = PythonOperator(
         task_id='store_op',
         python_callable=_store_weather
