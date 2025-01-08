@@ -62,7 +62,7 @@ with DAG(
     dag_id="weather_dag",
     description="@daily",
     schedule_interval='0 0 * * *',
-    start_date=datetime(2024,9,1),
+    start_date=datetime(2025,1,7),
     catchup=False) as dag:
 
     base_date = datetime.now().strftime("%Y%m%d")  # 발표 일자
